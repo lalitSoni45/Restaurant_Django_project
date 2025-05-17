@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block class %}class="sub_page"{% endblock class %}
+{% block feedback_status %}active{% endblock feedback_status %}
+
+{% block hero_box %}
+<div class="bg-box">
+  <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+</div>
+{% endblock hero_box %}
+
+{% block main %}
+<!-- feedback header section -->
+<section class="feedback_header layout_padding-top">
+  <div class="container">
+    <div class="heading_container heading_center">
+      <h2 class="feedback-title">
+        Share Your Experience
+      </h2>
+      <p class="feedback-subtitle">
+        We value your feedback and continuously work to improve our service
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- feedback form section -->
+<section class="feedback_section layout_padding-bottom">
+  <div class="container">
+    <div class="row">
+      <!-- Customer testimonials column -->
+      <div class="col-lg-6">
+        <div class="feedback-testimonials">
+          <div class="testimonial-header">
+            <div class="icon-box">
+              <i class="fa fa-quote-left"></i>
+            </div>
+            <h3>What Our Customers Say</h3>
+          </div>
+          
+          <!-- Testimonial Cards -->
+          <div class="testimonial-cards">
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>"The food was absolutely amazing and the service was impeccable. I'll definitely come back again!"</p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-img">
+                  <img src="{% static 'images/client1.jpg' %}" alt="Customer">
+                </div>
+                <div class="author-info">
+                  <h5>John Smith</h5>
+                  <span>Regular Customer</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="testimonial-card">
+              <div class="testimonial-content">
+                <p>"Feane has the best ambiance and food quality in town. Perfect for family dinners and celebrations."</p>
+              </div>
+              <div class="testimonial-author">
+                <div class="author-img">
+                  <img src="{% static 'images/client2.jpg' %}" alt="Customer">
+                </div>
+                <div class="author-info">
+                  <h5>Sarah Johnson</h5>
+                  <span>Food Enthusiast</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Food Images -->
+          <div class="feedback-images">
+            <div class="feedback-image-row">
+              <div class="feedback-image">
+                <img src="{% static 'images/f1.png' %}" alt="Food" class="img-fluid rounded">
+              </div>
+              <div class="feedback-image">
+                <img src="{% static 'images/f2.png' %}" alt="Food" class="img-fluid rounded">
+              </div>
+            </div>
+            <div class="feedback-image-row mt-3">
+              <div class="feedback-image">
+                <img src="{% static 'images/f3.png' %}" alt="Food" class="img-fluid rounded">
+              </div>
+              <div class="feedback-image">
+                <img src="{% static 'images/f4.png' %}" alt="Food" class="img-fluid rounded">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Feedback form column -->
+      <div class="col-lg-6">
+        <div class="feedback-form-container">
+          <div class="form-header">
+            <div class="icon-box">
+              <i class="fa fa-pencil"></i>
+            </div>
+            <h3>Tell Us About Your Visit</h3>
+            <p>Your feedback helps us serve you better</p>
+          </div>
+          
+          {% if messages %}
+          <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          
+          <form method="post" class="feedback-form">
+            {% csrf_token %}
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="{{ form.name.id_for_label }}"><i class="fa fa-user"></i> Your Name</label>
+                  {{ form.name }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="{{ form.phone.id_for_label }}"><i class="fa fa-phone"></i> Phone Number</label>
+                  {{ form.phone }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="{{ form.email.id_for_label }}"><i class="fa fa-envelope"></i> Email Address</label>
+              {{ form.email }}
+            </div>
+            
+            <div class="form-group">
+              <label for="{{ form.message.id_for_label }}"><i class="fa fa-comment"></i> Your Feedback</label>
+              {{ form.message }}
+            </div>
+            
+            <div class="rating-group">
+              <label><i class="fa fa-star"></i> Rate Your Experience</label>
+              <div class="star-rating">
+                <input type="radio" name="rating" id="star5" value="5"><label for="star5"></label>
+                <input type="radio" name="rating" id="star4" value="4"><label for="star4"></label>
+                <input type="radio" name="rating" id="star3" value="3"><label for="star3"></label>
+                <input type="radio" name="rating" id="star2" value="2"><label for="star2"></label>
+                <input type="radio" name="rating" id="star1" value="1"><label for="star1"></label>
+              </div>
+            </div>
+            
+            <div class="btn_box text-center">
+              <button type="submit" class="feedback-btn">
+                <i class="fa fa-paper-plane"></i> Submit Feedback
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- why feedback matters section -->
+<section class="feedback_importance_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center mb-5">
+      <h2>Why Your Feedback Matters</h2>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <div class="importance-card">
+          <div class="icon-circle">
+            <i class="fa fa-cutlery"></i>
+          </div>
+          <h4>Improve Our Menu</h4>
+          <p>Your suggestions help us enhance our menu offerings and create new exciting dishes.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="importance-card">
+          <div class="icon-circle">
+            <i class="fa fa-users"></i>
+          </div>
+          <h4>Train Our Staff</h4>
+          <p>Your feedback helps us provide better training to our team for exceptional service.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="importance-card">
+          <div class="icon-circle">
+            <i class="fa fa-smile-o"></i>
+          </div>
+          <h4>Enhance Experience</h4>
+          <p>We continuously work to improve your dining experience based on your valuable input.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end feedback section -->
+{% endblock main %}

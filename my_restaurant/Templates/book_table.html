@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block class %}class="sub_page"{% endblock class %}
+{% block table_status %}active{% endblock table_status %}
+
+{% block hero_box %}
+<div class="bg-box">
+  <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+</div>
+{% endblock hero_box %}
+
+{% block main %}
+<!-- Reservation Header Section -->
+<section class="reservation_header layout_padding-top">
+  <div class="container">
+    <div class="heading_container heading_center">
+      <h2 class="reservation-title">
+        Reserve Your Table
+      </h2>
+      <p class="reservation-subtitle">
+        Experience fine dining in an elegant atmosphere
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- book section -->
+<section class="book_section layout_padding-bottom">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="reservation-info">
+          <div class="info-card">
+            <div class="info-header">
+              <i class="fa fa-clock-o"></i>
+              <h4>Opening Hours</h4>
+            </div>
+            <div class="info-content">
+              <p><span>Monday - Friday:</span> 10:00 AM - 10:00 PM</p>
+              <p><span>Saturday - Sunday:</span> 11:00 AM - 11:00 PM</p>
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-header">
+              <i class="fa fa-phone"></i>
+              <h4>Contact Details</h4>
+            </div>
+            <div class="info-content">
+              <p><span>Phone:</span> +01 1234567890</p>
+              <p><span>Email:</span> reservations@feane.com</p>
+            </div>
+          </div>
+          
+          <div class="reservation-images">
+            <div class="image-container">
+              <img src="{% static 'images/f1.png' %}" alt="Restaurant Food" class="img-fluid rounded">
+            </div>
+            <div class="image-container">
+              <img src="{% static 'images/f2.png' %}" alt="Restaurant Food" class="img-fluid rounded">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="form_container booking-form-container">
+          <h3 class="booking-form-title">Book Your Experience</h3>
+          
+          {% if messages %}
+          <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          
+          <form method="post" class="reservation-form">
+            {% csrf_token %}
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="{{ form.name.id_for_label }}"><i class="fa fa-user"></i> Your Name</label>
+                  {{ form.name }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="{{ form.phone.id_for_label }}"><i class="fa fa-phone"></i> Phone Number</label>
+                  {{ form.phone }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="{{ form.email.id_for_label }}"><i class="fa fa-envelope"></i> Email Address</label>
+              {{ form.email }}
+            </div>
+            
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="{{ form.date.id_for_label }}"><i class="fa fa-calendar"></i> Select Date</label>
+                  {{ form.date }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="{{ form.time.id_for_label }}"><i class="fa fa-clock-o"></i> Select Time</label>
+                  {{ form.time }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="{{ form.guests.id_for_label }}"><i class="fa fa-users"></i> Number of Guests</label>
+              {{ form.guests }}
+            </div>
+            
+            <div class="form-group">
+              <label for="{{ form.special_request.id_for_label }}"><i class="fa fa-comment"></i> Special Requests</label>
+              {{ form.special_request }}
+            </div>
+            
+            <div class="btn_box text-center">
+              <button type="submit" class="book-table-btn">
+                <i class="fa fa-check-circle"></i> Confirm Reservation
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- restaurant atmosphere section -->
+<section class="atmosphere_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center mb-5">
+      <h2>Our Restaurant Atmosphere</h2>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <div class="atmosphere-card">
+          <div class="atmosphere-img">
+            <img src="{% static 'images/o1.jpg' %}" alt="Restaurant Atmosphere" class="img-fluid">
+          </div>
+          <div class="atmosphere-info">
+            <h4>Main Dining Area</h4>
+            <p>Elegant space with comfortable seating for a memorable dining experience.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="atmosphere-card">
+          <div class="atmosphere-img">
+            <img src="{% static 'images/o2.jpg' %}" alt="Restaurant Atmosphere" class="img-fluid">
+          </div>
+          <div class="atmosphere-info">
+            <h4>Private Section</h4>
+            <p>Intimate setting for private parties and special occasions.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="atmosphere-card">
+          <div class="atmosphere-img">
+            <img src="{% static 'images/about-img.png' %}" alt="Restaurant Atmosphere" class="img-fluid">
+          </div>
+          <div class="atmosphere-info">
+            <h4>Outdoor Patio</h4>
+            <p>Beautiful open-air dining perfect for enjoying meals in pleasant weather.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- reservation policy section -->
+<section class="policy_section layout_padding-bottom">
+  <div class="container">
+    <div class="heading_container heading_center mb-4">
+      <h2>Reservation Policy</h2>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="policy-info">
+          <div class="policy-item">
+            <i class="fa fa-info-circle"></i>
+            <p>Reservations can be made up to 30 days in advance.</p>
+          </div>
+          <div class="policy-item">
+            <i class="fa fa-info-circle"></i>
+            <p>Please inform us of any special dietary requirements when booking.</p>
+          </div>
+          <div class="policy-item">
+            <i class="fa fa-info-circle"></i>
+            <p>A 15-minute grace period is allowed for late arrivals; after that, tables may be released.</p>
+          </div>
+          <div class="policy-item">
+            <i class="fa fa-info-circle"></i>
+            <p>For groups of 8 or more, please contact us directly by phone.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end book section -->
+{% endblock main %}

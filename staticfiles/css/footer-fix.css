@@ -1,0 +1,230 @@
+/* Footer fix CSS - completely revised approach */
+
+/* Reset stacking contexts and make all elements visible */
+body {
+  position: relative !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Allow normal document flow but control z-index */
+#main-content {
+  position: relative !important;
+  z-index: 10 !important;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Force menu section to be in front */
+.food_section {
+  position: relative !important;
+  z-index: 10 !important;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Force menu items to be in front */
+.menu-box, .box {
+  position: relative !important;
+  z-index: 10 !important;
+  background-color: #222831 !important; /* Keep dark menu boxes */
+  margin-bottom: 30px !important;
+}
+
+/* Force the footer to stay at bottom and not overlap */
+.footer_section {
+  position: relative !important;
+  z-index: 5 !important;
+  margin-top: 30px !important;
+  clear: both !important;
+  border-top: 1px solid #f0f0f0 !important; /* Light border for white background */
+  background-color: #222831 !important; /* Keep dark footer */
+}
+
+/* Critical fix - force rows to be properly positioned */
+.row.grid {
+  position: relative !important;
+  z-index: 10 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+/* Force menu items parent container to be in front */
+.filters-content {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Key fix - force all containers to maintain proper stacking */
+.container {
+  position: relative !important;
+  z-index: inherit !important;
+}
+
+/* Special override for menu page */
+body.sub_page #main-content {
+  padding-bottom: 50px !important;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Menu item images fix */
+.img-box {
+  background-color: #f1f2f3 !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Fix details for menu items */
+.detail-box {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* White background spacing */
+.pre-footer-clear {
+  background-color: #ffffff !important; /* white background */
+  height: 50px !important;
+  width: 100% !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* Reset positioning for everything */
+* {
+  position: static;
+}
+
+/* Force normal document flow */
+body, html {
+  overflow-x: hidden;
+  height: 100%;
+  background-color: #ffffff !important; /* white background */
+  color: #222831 !important; /* Dark text for white background */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content should take majority of space */
+#main-content {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Fix menu items */
+.food_section {
+  position: static;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+  background-color: #ffffff !important; /* white background */
+}
+
+.menu-box, .box {
+  background-color: #222831;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+/* Additional spacer */
+.footer-spacing {
+  height: 30px;
+  clear: both;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Override normal positioning for these elements */
+.navbar, .user_option, .cart-sidebar, .fixed-cart-button {
+  position: relative;
+  z-index: 100;
+}
+
+.slider_section {
+  position: relative;
+}
+
+/* Force clear before footer */
+.pre-footer-clear {
+  clear: both;
+  height: 30px;
+  display: block;
+  margin-top: 30px;
+  border-top: none;
+  padding-top: 0;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Fixed absolute positioning for footer */
+@media (min-width: 768px) {
+  .footer_section {
+    position: static;
+    margin-top: 30px;
+    background-color: #222831 !important; /* Keep dark footer */
+  }
+}
+
+/* Menu-specific additional spacing for final items row */
+.row.grid {
+  margin-bottom: 30px;
+}
+
+/* Last row of items needs consistent space */
+.col-sm-6.col-lg-4:nth-last-child(-n+3) {
+  margin-bottom: 30px;
+}
+
+/* Removed the visual separator line */
+#main-content::after {
+  content: none;
+}
+
+/* Additional fixes for content and menus */
+.filters-content {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.layout_padding {
+  position: relative !important;
+  z-index: 10 !important;
+  background-color: #ffffff !important; /* white background */
+}
+
+.box {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Spacing before footer */
+.pre-footer-clear {
+  clear: both !important;
+  height: 50px !important;
+  width: 100% !important;
+  display: block !important;
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Fix footer for all page types */
+.footer_section {
+  position: relative !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 5 !important;
+  background-color: #222831 !important; /* Keep dark footer */
+}
+
+/* Global background color fix - restore white theme */
+html, body, #main-content, section {
+  background-color: #ffffff !important; /* white background */
+}
+
+/* Section backgrounds */
+.about_section, .client_section, .book_section {
+  background-color: #ffffff !important; /* white background */
+  color: #222831 !important; /* Dark text for white background */
+} 

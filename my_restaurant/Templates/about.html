@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block class %}class="sub_page"{% endblock class %}
+
+{% block about_status %}active{% endblock about_status %}
+
+{% block main %}
+
+<!-- about section -->
+<section class="about_section layout_padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="img-box about-img-container">
+          <img src="{% static 'images/about-img.png' %}" alt="About Feane" class="img-fluid rounded">
+          <div class="experience-badge">
+            <span class="years">{{ restaurant_info.experience_years }}</span>
+            <span class="text">Years of<br>Excellence</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="detail-box">
+          <div class="heading_container mb-4">
+            <h2 class="stylish-heading">
+              Our Story
+            </h2>
+          </div>
+          <p class="welcome-text">
+            Welcome to <strong>Feane</strong>, where culinary excellence meets warm hospitality.
+          </p>
+          <p class="story-text">
+            Founded in {{ restaurant_info.founding_year }}, Feane has grown from a small family eatery to one of the region's most beloved dining destinations. 
+          </p>
+          
+          <p class="story-text mb-4">
+            Our passion for exceptional food made with fresh, locally-sourced ingredients drives everything we do.
+          </p>
+          
+          <p class="story-text mb-5">
+            Every dish at Feane is carefully crafted by our team of talented chefs who blend traditional recipes with innovative 
+            techniques to create memorable flavor experiences that keep our guests coming back.
+          </p>
+          
+          <div class="about-features">
+            <div class="feature-item">
+              <i class="fa fa-check-circle"></i>
+              <span>Fresh, locally-sourced ingredients</span>
+            </div>
+            <div class="feature-item">
+              <i class="fa fa-check-circle"></i>
+              <span>Skilled chefs with international experience</span>
+            </div>
+            <div class="feature-item">
+              <i class="fa fa-check-circle"></i>
+              <span>Warm, inviting atmosphere for every occasion</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- values section -->
+<section class="values_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center mb-5">
+      <h2>Why Choose Us</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="value-box">
+          <div class="icon-box">
+            <i class="fa fa-cutlery"></i>
+          </div>
+          <h4>Quality Food</h4>
+          <p>We use only premium ingredients to ensure every dish meets our high standards of excellence.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="value-box">
+          <div class="icon-box">
+            <i class="fa fa-users"></i>
+          </div>
+          <h4>Dedicated Team</h4>
+          <p>Our staff is committed to providing exceptional service that makes every visit special.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="value-box">
+          <div class="icon-box">
+            <i class="fa fa-star"></i>
+          </div>
+          <h4>Elegant Ambience</h4>
+          <p>Experience dining in our beautifully designed spaces that create the perfect mood for any occasion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- team section -->
+<section class="team_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center mb-5">
+      <h2>Meet Our Team</h2>
+    </div>
+    <div class="row">
+      <div class="col-lg-4 col-md-6">
+        <div class="team-member">
+          <div class="team-img">
+            <img src="{% static 'images/client1.jpg' %}" alt="Chef" class="img-fluid">
+          </div>
+          <div class="team-info">
+            <h4>John Doe</h4>
+            <p>Executive Chef</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="team-member">
+          <div class="team-img">
+            <img src="{% static 'images/client2.jpg' %}" alt="Chef" class="img-fluid">
+          </div>
+          <div class="team-info">
+            <h4>Jane Smith</h4>
+            <p>Pastry Chef</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="team-member">
+          <div class="team-img">
+            <img src="{% static 'images/about-img.png' %}" alt="Chef" class="img-fluid">
+          </div>
+          <div class="team-info">
+            <h4>Mike Wilson</h4>
+            <p>Head Sous Chef</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- end about section -->
+{% endblock main %}
