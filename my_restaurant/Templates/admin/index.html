@@ -1,0 +1,207 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  #content {
+    padding: 20px 30px;
+  }
+  
+  #content h1 {
+    font-size: 28px;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+  }
+  
+  .dashboard-header {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .dashboard-header h2 {
+    color: var(--secondary-color);
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-header p {
+    color: #666;
+    margin-bottom: 0;
+  }
+  
+  .app-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+  }
+  
+  .app-item {
+    flex: 0 0 calc(33.333% - 20px);
+    margin: 0 10px 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  
+  @media (max-width: 992px) {
+    .app-item {
+      flex: 0 0 calc(50% - 20px);
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .app-item {
+      flex: 0 0 calc(100% - 20px);
+    }
+  }
+  
+  .app-item h3 {
+    margin: 0;
+    padding: 12px 15px;
+    background: var(--secondary-color);
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .model-list {
+    padding: 5px 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .model-list li {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .model-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .model-list li a {
+    display: block;
+    padding: 10px 15px;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .model-list li a:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+  }
+  
+  .modern-dashboard-banner {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #6236FF 0%, #9370DB 100%);
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(98, 54, 255, 0.3);
+  }
+  
+  .modern-dashboard-banner h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .modern-dashboard-banner p {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    opacity: 0.9;
+  }
+  
+  .modern-dashboard-button {
+    display: inline-block;
+    background: white;
+    color: #6236FF;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modern-dashboard-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    color: #6236FF;
+    text-decoration: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modern-dashboard-banner">
+  <h2>Try Our Modern Restaurant Dashboard</h2>
+  <p>Get a comprehensive view of your restaurant's performance with our modern, data-driven dashboard</p>
+  <a href="{% url 'Admin_Dashboard' %}" class="modern-dashboard-button">
+    Launch Modern Dashboard
+  </a>
+</div>
+
+<div class="dashboard-header">
+  <h2>Welcome to Feane Restaurant Admin Dashboard</h2>
+  <p>Use the sections below to manage your restaurant's content, bookings, orders, and more.</p>
+</div>
+
+<div id="content-main">
+  <div class="app-list">
+  {% for app in app_list %}
+    <div class="app-item">
+      <h3>{{ app.name }}</h3>
+      <ul class="model-list">
+        {% for model in app.models %}
+          <li>
+            {% if model.admin_url %}
+              <a href="{{ model.admin_url }}">{{ model.name }}</a>
+            {% else %}
+              {{ model.name }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<div class="module" style="margin-top: 20px;">
+  <h2>Quick Actions</h2>
+  <div style="padding: 10px 15px;">
+    <ul style="margin: 0; padding: 0; list-style: none;">
+      <li style="margin-bottom: 8px;">
+        <a href="/admin/auth/user/" style="color: var(--link-color); text-decoration: none; font-weight: 500;">
+          <span style="margin-right: 5px;">👤</span> Manage Users
+        </a>
+      </li>
+      <li style="margin-bottom: 8px;">
+        <a href="/" style="color: var(--link-color); text-decoration: none; font-weight: 500;">
+          <span style="margin-right: 5px;">🏠</span> View Website
+        </a>
+      </li>
+      <li>
+        <a href="/admin/password_change/" style="color: var(--link-color); text-decoration: none; font-weight: 500;">
+          <span style="margin-right: 5px;">🔑</span> Change Password
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %} 

@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-h0pdo8vqcqe%uu098moo!0w9cfb17hipgtmwqmd$pk*j8uj&%#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yourusername.pythonanywhere.com']
 
 
 # Application definition
@@ -39,6 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'base_app',
     
+]
+
+# Define custom user model - will be implemented in phase 2
+# AUTH_USER_MODEL = 'base_app.CustomUser'
+
+# Authentication backends to support both username and phone number authentication
+AUTHENTICATION_BACKENDS = [
+    # 'base_app.authentication.PhoneOrEmailAuthBackend',  # Will be enabled in phase 2
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +138,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "my_restaurant", "Media")
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Razorpay Settings - Valid Test API Keys
+RAZORPAY_KEY_ID = 'rzp_test_7onm4F6FvzXRIR'
+RAZORPAY_KEY_SECRET = 'WNH1LOdEL8K3KPqmgVTQNKUi'
+
+# Email Configuration
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development, outputs emails to console
+# Use the following for production with a real SMTP server:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'lalitsoni45607@gmail.com'  # User's actual email
+EMAIL_HOST_PASSWORD = 'dtkl yqgz nelv ompi'  # Replace with your app password
+
+# Email is the only notification method used in the application

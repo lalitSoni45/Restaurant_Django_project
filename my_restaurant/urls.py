@@ -22,6 +22,7 @@ from base_app.views import *
 
 
 urlpatterns = [
+    path('admin/dashboard/', admin_dashboard, name='Admin_Dashboard'),
     path('admin/', admin.site.urls),
     path('', home, name='Home'),
     path('menu/', menu, name='Menu'),
@@ -39,6 +40,12 @@ urlpatterns = [
     path('cart/remove/<int:item_id>/', remove_from_cart, name='Remove_From_Cart'),
     path('cart/clear/', clear_cart, name='Clear_Cart'),
     path('cart/confirm/', confirm_order, name='Confirm_Order'),
+    
+    # Payment URLs
+    path('payment/process/<int:payment_id>/', process_payment, name='Process_Payment'),
+    path('payment/callback/', payment_callback, name='Payment_Callback'),
+    path('payment/success/', payment_success, name='Payment_Success'),
+    path('payment/failed/', payment_failed, name='Payment_Failed'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

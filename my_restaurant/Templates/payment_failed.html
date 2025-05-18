@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block class %}class="sub_page"{% endblock class %}
+{% block menu_status %}active{% endblock menu_status %}
+
+{% block hero_box %}
+<div class="bg-box">
+  <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+</div>
+{% endblock hero_box %}
+
+{% block main %}
+<!-- failed section -->
+<section class="book_section layout_padding">
+  <div class="container">
+    <div class="heading_container">
+      <h2>
+        Payment Failed
+      </h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <div class="form_container payment-result-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="error-animation mb-4">
+                <svg class="error-circle" viewBox="0 0 100 100">
+                  <circle class="error-circle__circle" cx="50" cy="50" r="45" fill="none" />
+                  <path class="error-circle__line error-circle__line--first" d="M 34 34 L 66 66" />
+                  <path class="error-circle__line error-circle__line--second" d="M 66 34 L 34 66" />
+                </svg>
+              </div>
+              <h3 class="mb-4 error-title">Payment Failed</h3>
+              <p class="error-message">Sorry, your payment could not be processed</p>
+              
+              <div class="error-details mt-4 mb-4">
+                <div class="p-3 bg-light rounded">
+                  <p class="error-reason">Possible reasons:</p>
+                  <ul class="text-left failure-reasons">
+                    <li>Insufficient balance</li>
+                    <li>Incorrect card information</li>
+                    <li>Transaction rejected by bank</li>
+                    <li>Network issue</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div class="mt-4 error-buttons">
+                <a href="{% url 'Menu' %}" class="btn btn-primary">Try Again</a>
+                <a href="{% url 'Home' %}" class="btn btn-secondary">Go to Home Page</a>
+              </div>
+              
+              <div class="mt-4 support-section">
+                <p>Contact our support team for any issues</p>
+                <p class="support-contact"><i class="fa fa-phone"></i> +91 98765 43210</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end failed section -->
+{% endblock main %}
+
+{% block extrajs %}
+<style>
+  .payment-result-card {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .payment-result-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+  }
+  
+  .card {
+    border-radius: 15px;
+    border: none;
+  }
+  
+  .error-title {
+    color: #dc3545;
+    font-weight: 700;
+  }
+  
+  .error-message {
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .error-buttons .btn {
+    margin: 0 10px;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .error-buttons .btn-primary {
+    background-color: #ffbe33;
+    border-color: #ffbe33;
+  }
+  
+  .error-buttons .btn-primary:hover {
+    background-color: #e69c00;
+    border-color: #e69c00;
+    transform: translateY(-2px);
+  }
+  
+  .error-buttons .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .error-buttons .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+    transform: translateY(-2px);
+  }
+  
+  .error-details {
+    border-radius: 10px;
+    padding: 5px;
+    margin: 20px 0;
+  }
+  
+  .error-reason {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .failure-reasons {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .failure-reasons li {
+    padding: 8px;
+    position: relative;
+    padding-left: 25px;
+  }
+  
+  .failure-reasons li:before {
+    content: "•";
+    color: #dc3545;
+    font-weight: bold;
+    position: absolute;
+    left: 10px;
+  }
+  
+  .support-section {
+    margin-top: 30px;
+    color: #666;
+  }
+  
+  .support-contact {
+    font-weight: 600;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Error animation */
+  .error-animation {
+    margin: 20px auto;
+    width: 80px;
+    height: 80px;
+    position: relative;
+  }
+  
+  .error-circle {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .error-circle__circle {
+    stroke-width: 3;
+    stroke: #dc3545;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transform-origin: 50% 50%;
+    animation: circle-draw 1s ease-in-out forwards;
+  }
+  
+  .error-circle__line {
+    stroke-width: 3;
+    stroke: #dc3545;
+    stroke-dasharray: 45;
+    stroke-dashoffset: 45;
+  }
+  
+  .error-circle__line--first {
+    animation: line-draw 0.5s ease-in 0.5s forwards;
+  }
+  
+  .error-circle__line--second {
+    animation: line-draw 0.5s ease-in 0.7s forwards;
+  }
+  
+  @keyframes circle-draw {
+    0% {
+      stroke-dashoffset: 283;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  @keyframes line-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+{% endblock extrajs %} 

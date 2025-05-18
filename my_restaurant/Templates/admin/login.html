@@ -1,0 +1,91 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+<style>
+  :root {
+    --primary-color: #ffbe33;
+    --secondary-color: #222831;
+  }
+  
+  body {
+    background: #f8f9fa;
+  }
+  
+  .login {
+    background: white;
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .login #header {
+    height: auto;
+    padding: 15px 0;
+    text-align: center;
+  }
+  
+  .login #branding h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 24px;
+  }
+  
+  .login #branding h1:before {
+    content: "🍽️ ";
+    font-size: 1.2em;
+  }
+  
+  .login .form-row {
+    padding: 10px 0;
+  }
+  
+  .login .form-row label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+  .login .form-row input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .login .submit-row {
+    padding: 20px 0 0;
+  }
+  
+  .login .submit-row input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .login .submit-row input:hover {
+    background: #e69c00;
+  }
+  
+  .login .password-reset-link {
+    text-align: center;
+    margin-top: 15px;
+  }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">Feane Restaurant Admin Login</h1>
+{% endblock %} 

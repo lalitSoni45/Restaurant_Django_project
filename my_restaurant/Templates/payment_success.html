@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block class %}class="sub_page"{% endblock class %}
+{% block menu_status %}active{% endblock menu_status %}
+
+{% block hero_box %}
+<div class="bg-box">
+  <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+</div>
+{% endblock hero_box %}
+
+{% block main %}
+<!-- success section -->
+<section class="book_section layout_padding">
+  <div class="container">
+    <div class="heading_container">
+      <h2>
+        Payment Successful
+      </h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <div class="form_container payment-result-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="success-animation mb-4">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                  <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                  <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+              </div>
+              <h3 class="mb-4 success-title">Thank You!</h3>
+              <p class="success-message">Your payment has been completed successfully</p>
+              
+              <div class="payment-details mt-4 mb-4">
+                <h5 class="mb-3">Payment Details</h5>
+                <div class="row">
+                  <div class="col-md-6 text-md-right">
+                    <p><strong>Transaction ID:</strong></p>
+                    <p><strong>Payment Date:</strong></p>
+                    <p><strong>Payment Amount:</strong></p>
+                  </div>
+                  <div class="col-md-6 text-md-left">
+                    <p>{{ transaction_id }}</p>
+                    <p>{{ current_time|date:"d F Y, h:i A" }}</p>
+                    <p>₹{{ payment.amount }}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {% if payment.table_booking %}
+              <div class="booking-details payment-section mb-3">
+                <h5 class="section-title">Table Booking Details</h5>
+                <div class="row">
+                  <div class="col-md-6 text-md-right">
+                    <p><strong>Booking ID:</strong></p>
+                    <p><strong>Name:</strong></p>
+                    <p><strong>Date and Time:</strong></p>
+                    <p><strong>Guests:</strong></p>
+                    <p><strong>Booking Fee:</strong></p>
+                  </div>
+                  <div class="col-md-6 text-md-left">
+                    <p>#{{ payment.table_booking.id }}</p>
+                    <p>{{ payment.table_booking.name }}</p>
+                    <p>{{ payment.table_booking.date|date:"d F Y" }}, {{ payment.table_booking.time }}</p>
+                    <p>{{ payment.table_booking.guests }}</p>
+                    <p>₹50.00</p>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              
+              {% if payment.order %}
+              <div class="order-details payment-section mb-3">
+                <h5 class="section-title">Food Order Details</h5>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="order-items">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in payment.order.items.all %}
+                          <tr>
+                            <td>{{ item.menu_item.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ item.total_price }}</td>
+                          </tr>
+                          {% endfor %}
+                          <tr class="order-total">
+                            <td colspan="2" class="text-right font-weight-bold">Total:</td>
+                            <td class="font-weight-bold">₹{{ payment.order.total_price }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              
+              <div class="mt-4 success-buttons">
+                <a href="{% url 'Menu' %}" class="btn btn-primary">Go to Menu</a>
+                <a href="{% url 'Home' %}" class="btn btn-secondary">Go to Home Page</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end success section -->
+{% endblock main %}
+
+{% block extrajs %}
+<style>
+  .payment-result-card {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .payment-result-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+  }
+  
+  .card {
+    border-radius: 15px;
+    border: none;
+  }
+  
+  .success-title {
+    color: #28a745;
+    font-weight: 700;
+  }
+  
+  .success-message {
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .success-buttons .btn {
+    margin: 0 10px;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .success-buttons .btn-primary {
+    background-color: #ffbe33;
+    border-color: #ffbe33;
+  }
+  
+  .success-buttons .btn-primary:hover {
+    background-color: #e69c00;
+    border-color: #e69c00;
+    transform: translateY(-2px);
+  }
+  
+  .success-buttons .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .success-buttons .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+    transform: translateY(-2px);
+  }
+  
+  .payment-details {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+  }
+  
+  .payment-section {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+  }
+  
+  .section-title {
+    color: #222831;
+    border-bottom: 2px solid #ffbe33;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .order-items {
+    margin-top: 15px;
+  }
+  
+  .order-total {
+    background-color: #eaeaea;
+  }
+  
+  /* Checkmark animation */
+  .success-animation {
+    margin: 20px auto;
+  }
+  
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #28a745;
+    stroke-miterlimit: 10;
+    margin: 0 auto;
+    box-shadow: inset 0px 0px 0px #28a745;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  }
+  
+  .checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #28a745;
+    fill: none;
+    animation: stroke .6s cubic-bezier(0.650, 0.000, 0.450, 1.000) forwards;
+  }
+  
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke .3s cubic-bezier(0.650, 0.000, 0.450, 1.000) .8s forwards;
+  }
+  
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  @keyframes scale {
+    0%, 100% {
+      transform: none;
+    }
+    50% {
+      transform: scale3d(1.1, 1.1, 1);
+    }
+  }
+  
+  @keyframes fill {
+    100% {
+      box-shadow: inset 0px 0px 0px 30px #28a745;
+    }
+  }
+</style>
+{% endblock extrajs %} 

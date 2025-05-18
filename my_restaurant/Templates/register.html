@@ -1,6 +1,26 @@
 {% extends 'base.html' %}
 
 {% block class %}class="sub_page"{% endblock class %}
+
+{% block extrastyle %}
+<style>
+    .otp-input {
+        letter-spacing: 0.5em;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .verification-timer {
+        font-size: 0.9em;
+        color: #dc3545;
+        margin-top: 5px;
+    }
+    .otp-section {
+        display: none;
+    }
+</style>
+{% endblock %}
+
 {% block main %}
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -20,34 +40,62 @@
                     </div>
                     {% endif %}
                     
-                    <form method="post">
+                    <div class="alert alert-info mb-4">
+                        <strong>Note:</strong> At least one contact method (email or phone number) is required for registration.
+                    </div>
+                    
+                    <!-- Registration Form -->
+                    <form id="registrationForm" method="post" onsubmit="return validateContactInfo()">
                         {% csrf_token %}
+                        <input type="hidden" name="form_type" value="registration">
                         <div class="form-group mb-3">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+                            <label for="username">Username <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="email">Email <span class="text-muted">(at least one email or phone is required)</span></label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address">
                         </div>
                         <div class="form-group mb-3">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <label for="phone_number">Phone Number <span class="text-muted">(at least one email or phone is required)</span></label>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Enter your phone number">
                         </div>
                         <div class="form-group mb-3">
-                            <label for="confirm_password">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            <label for="password1">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password1" name="password1" placeholder="Choose a password" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="password2">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm your password" required>
                         </div>
                         <div class="d-grid gap-2 mb-3">
                             <button type="submit" class="btn btn-primary">Register</button>
                         </div>
-                        <div class="text-center">
-                            <p>Already have an account? <a href="{% url 'Login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Login here</a></p>
-                        </div>
                     </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="{% url 'Login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Login here</a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+    // Validate that at least one contact method is provided
+    function validateContactInfo() {
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone_number').value.trim();
+        
+        if (!email && !phone) {
+            alert('Please provide at least one contact method - email or phone number.');
+            return false;
+        }
+        
+        return true;
+    }
+</script>
 {% endblock %} 

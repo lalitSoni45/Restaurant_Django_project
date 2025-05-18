@@ -127,11 +127,89 @@
               <label for="{{ form.special_request.id_for_label }}"><i class="fa fa-comment"></i> Special Requests</label>
               {{ form.special_request }}
             </div>
+
+            <!-- Pre-order food toggle -->
+            <div class="form-group pre-order-toggle">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="preOrderFood" name="pre_order_food" onchange="toggleFoodSection()">
+                <label class="custom-control-label" for="preOrderFood"><i class="fa fa-cutlery"></i> Pre-order Food for Your Table</label>
+              </div>
+            </div>
+            
+            <!-- Food selection section (hidden by default) -->
+            <div id="foodSelectionSection" style="display: none;">
+              <h4 class="food-section-title"><i class="fa fa-cutlery"></i> Select Food Items</h4>
+              
+              <div class="food-category-tabs">
+                <ul class="nav nav-tabs" id="foodTabs" role="tablist">
+                  {% for category in categories %}
+                  <li class="nav-item">
+                    <a class="nav-link {% if forloop.first %}active{% endif %}" id="category-{{ category.id }}-tab" data-toggle="tab" 
+                       href="#category-{{ category.id }}" role="tab">{{ category.name }}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+                
+                <div class="tab-content mt-3" id="foodTabContent">
+                  {% for category in categories %}
+                  <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+                       id="category-{{ category.id }}" role="tabpanel">
+                    <div class="food-items-grid">
+                      {% for item in menu_items %}
+                        {% if item.category.id == category.id %}
+                        <div class="food-item">
+                          <div class="food-item-img">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                            {% else %}
+                            <img src="{% static 'images/f1.png' %}" alt="{{ item.name }}">
+                            {% endif %}
+                          </div>
+                          <div class="food-item-details">
+                            <h5>{{ item.name }}</h5>
+                            <p>{{ item.description|truncatechars:50 }}</p>
+                            <div class="price-quantity">
+                              <span class="price">₹{{ item.price }}</span>
+                              <div class="quantity-control">
+                                <i class="fa fa-minus-circle qty-icon minus" onclick="decrementQuantity('item_{{ item.id }}')"></i>
+                                <input type="number" name="item_{{ item.id }}" id="item_{{ item.id }}" value="0" min="0" max="10" class="item-quantity">
+                                <i class="fa fa-plus-circle qty-icon plus" onclick="incrementQuantity('item_{{ item.id }}')"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              
+              <div class="selected-food-summary mt-3">
+                <h5>Your Selected Items</h5>
+                <div id="selectedItemsContainer" class="selected-items">
+                  <p id="noItemsMessage">No items selected yet</p>
+                </div>
+                <div class="food-order-total mt-2">
+                  <span>Food Order Total:</span>
+                  <span id="foodOrderTotal">₹0.00</span>
+                </div>
+              </div>
+            </div>
             
             <div class="btn_box text-center">
+              {% if user_authenticated %}
               <button type="submit" class="book-table-btn">
-                <i class="fa fa-check-circle"></i> Confirm Reservation
+                <i class="fa fa-check-circle"></i> Book Table
               </button>
+              {% else %}
+              <div class="alert alert-info" role="alert">
+                <p><i class="fa fa-info-circle"></i> Login required to book a table</p>
+                <a href="{% url 'Login' %}?next={{ request.path }}" class="btn btn-primary">Login</a>
+                <a href="{% url 'Register' %}?next={{ request.path }}" class="btn btn-secondary">Register</a>
+              </div>
+              {% endif %}
             </div>
           </form>
         </div>
@@ -218,5 +296,643 @@
     </div>
   </div>
 </section>
+
+<!-- JavaScript for food selection -->
+<script>
+  // Toggle food selection section
+  function toggleFoodSection() {
+    const foodSection = document.getElementById('foodSelectionSection');
+    if (document.getElementById('preOrderFood').checked) {
+      foodSection.style.display = 'block';
+    } else {
+      foodSection.style.display = 'none';
+      clearAllFoodSelections();
+    }
+  }
+  
+  // Increment quantity
+  function incrementQuantity(itemId) {
+    const input = document.getElementById(itemId);
+    const currentValue = parseInt(input.value) || 0;
+    if (currentValue < parseInt(input.max)) {
+      input.value = currentValue + 1;
+      updateSelectedItems();
+    }
+  }
+  
+  // Decrement quantity
+  function decrementQuantity(itemId) {
+    const input = document.getElementById(itemId);
+    const currentValue = parseInt(input.value) || 0;
+    if (currentValue > parseInt(input.min)) {
+      input.value = currentValue - 1;
+      updateSelectedItems();
+    }
+  }
+  
+  // Clear all food selections
+  function clearAllFoodSelections() {
+    const inputs = document.querySelectorAll('.item-quantity');
+    inputs.forEach(input => {
+      input.value = 0;
+    });
+    updateSelectedItems();
+  }
+  
+  // Update selected items summary
+  function updateSelectedItems() {
+    const selectedItems = [];
+    let totalAmount = 0;
+    
+    document.querySelectorAll('.food-item').forEach(item => {
+      const nameElement = item.querySelector('h5');
+      const priceElement = item.querySelector('.price');
+      const quantityInput = item.querySelector('.item-quantity');
+      
+      const quantity = parseInt(quantityInput.value) || 0;
+      
+      if (quantity > 0) {
+        const name = nameElement.textContent;
+        const priceText = priceElement.textContent.replace('₹', '');
+        const price = parseFloat(priceText);
+        const itemTotal = price * quantity;
+        
+        selectedItems.push({ name, price, quantity, itemTotal });
+        totalAmount += itemTotal;
+      }
+    });
+    
+    const container = document.getElementById('selectedItemsContainer');
+    const noItemsMessage = document.getElementById('noItemsMessage');
+    container.innerHTML = '';
+    
+    if (selectedItems.length === 0) {
+      container.appendChild(noItemsMessage);
+    } else {
+      selectedItems.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'selected-food-item';
+        itemDiv.innerHTML = `
+          <span>${item.name} × ${item.quantity}</span>
+          <span>₹${item.itemTotal.toFixed(2)}</span>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+    
+    document.getElementById('foodOrderTotal').textContent = `₹${totalAmount.toFixed(2)}`;
+  }
+  
+  // Initialize item selection tracking on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const quantityInputs = document.querySelectorAll('.item-quantity');
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', updateSelectedItems);
+    });
+  });
+</script>
+
+<style>
+  /* Enhanced Professional Styling for Table Booking */
+  .reservation-title {
+    font-size: 3rem;
+    color: #222831;
+    margin-bottom: 15px;
+    position: relative;
+    font-weight: 700;
+  }
+  
+  .reservation-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .reservation-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+  
+  .info-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ffbe33;
+    padding-bottom: 10px;
+  }
+  
+  .info-header i {
+    color: #ffbe33;
+    font-size: 24px;
+    margin-right: 15px;
+  }
+  
+  .info-header h4 {
+    margin: 0;
+    font-weight: 600;
+    color: #222831;
+  }
+  
+  .info-content p {
+    margin-bottom: 8px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .info-content p span {
+    font-weight: 600;
+    color: #222831;
+  }
+  
+  .reservation-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: auto;
+  }
+  
+  .image-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .image-container:hover {
+    transform: scale(1.03);
+  }
+  
+  .image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .image-container:hover img {
+    transform: scale(1.1);
+  }
+  
+  /* Form Container Styling */
+  .booking-form-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    position: relative;
+  }
+  
+  .booking-form-title {
+    text-align: center;
+    font-weight: 600;
+    color: #222831;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    position: relative;
+    padding-bottom: 15px;
+  }
+  
+  .booking-form-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #ffbe33;
+  }
+  
+  .reservation-form .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .reservation-form label {
+    font-weight: 500;
+    color: #222831;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .reservation-form .form-control {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    height: auto;
+    font-size: 1rem;
+    box-shadow: none;
+    transition: all 0.3s ease;
+  }
+  
+  .reservation-form .form-control:focus {
+    border-color: #ffbe33;
+    box-shadow: 0 0 0 0.2rem rgba(255, 190, 51, 0.25);
+  }
+  
+  .reservation-form textarea.form-control {
+    height: 100px;
+  }
+  
+  /* Custom Switch Styling */
+  .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #ffbe33;
+    border-color: #ffbe33;
+  }
+  
+  .pre-order-toggle {
+    margin: 25px 0;
+    padding: 15px;
+    border-top: 1px dashed #ddd;
+    border-bottom: 1px dashed #ddd;
+  }
+  
+  .custom-control-label {
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .custom-control-label::before {
+    border-width: 2px;
+  }
+  
+  /* Food Selection Styling */
+  .food-section-title {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    color: #222831;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  
+  .food-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #ffbe33;
+  }
+  
+  .food-category-tabs .nav-tabs {
+    border-bottom: 2px solid #f1f1f1;
+  }
+  
+  .food-category-tabs .nav-link {
+    border: none;
+    color: #666;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 5px 5px 0 0;
+    transition: all 0.3s ease;
+  }
+  
+  .food-category-tabs .nav-link.active {
+    color: #222831;
+    background: none;
+    font-weight: 600;
+    border-bottom: 3px solid #ffbe33;
+  }
+  
+  .food-category-tabs .nav-link:hover:not(.active) {
+    background: #f9f9f9;
+  }
+  
+  .food-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 15px 0;
+  }
+  
+  .food-item {
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .food-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  }
+  
+  .food-item-img {
+    height: 120px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    position: relative;
+  }
+  
+  .food-item-img::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.03);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .food-item:hover .food-item-img::after {
+    opacity: 1;
+  }
+  
+  .food-item-img img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+  }
+  
+  .food-item:hover .food-item-img img {
+    transform: scale(1.08);
+  }
+  
+  .food-item-details {
+    padding: 15px;
+  }
+  
+  .food-item-details h5 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #222831;
+  }
+  
+  .food-item-details p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+    height: 38px;
+    overflow: hidden;
+  }
+  
+  /* Quantity Controls Styling - Icon Version */
+  .quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-left: auto;
+  }
+  
+  .qty-icon {
+    color: #ffbe33;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .qty-icon:hover {
+    color: #e5a82c;
+    transform: scale(1.2);
+  }
+  
+  .qty-icon:active {
+    color: #d99b1e;
+    transform: scale(1);
+  }
+  
+  .item-quantity {
+    width: 32px;
+    height: 24px;
+    text-align: center;
+    margin: 0;
+    border: 1px solid #ddd;
+    background: white;
+    outline: none;
+    color: #222831;
+    font-weight: 600;
+    padding: 0;
+    font-size: 14px;
+    border-radius: 4px;
+  }
+  
+  .item-quantity::-webkit-inner-spin-button, 
+  .item-quantity::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+  
+  /* Price and quantity layout improvement */
+  .price-quantity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
+  }
+  
+  .price {
+    font-weight: bold;
+    color: #222831;
+    font-size: 18px;
+  }
+  
+  /* Selected items summary */
+  .selected-food-summary {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+  }
+  
+  .selected-food-summary h5 {
+    color: #222831;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #ffbe33;
+    padding-bottom: 10px;
+    display: inline-block;
+  }
+  
+  .selected-items {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding-right: 5px;
+  }
+  
+  .selected-food-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
+  }
+  
+  .food-order-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 2px solid #ddd;
+    color: #222831;
+  }
+  
+  /* Submit Button */
+  .book-table-btn {
+    background: #ffbe33;
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    box-shadow: 0 5px 15px rgba(255, 190, 51, 0.3);
+  }
+  
+  .book-table-btn:hover {
+    background: #e5a82c;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 190, 51, 0.4);
+  }
+  
+  /* Atmosphere Section */
+  .atmosphere_section {
+    background: #f8f9fa;
+  }
+  
+  .atmosphere-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .atmosphere-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .atmosphere-img {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .atmosphere-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .atmosphere-card:hover .atmosphere-img img {
+    transform: scale(1.08);
+  }
+  
+  .atmosphere-info {
+    padding: 20px;
+  }
+  
+  .atmosphere-info h4 {
+    color: #222831;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .atmosphere-info p {
+    color: #666;
+    margin-bottom: 0;
+  }
+  
+  /* Policy Section */
+  .policy-info {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    padding: 30px;
+  }
+  
+  .policy-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+  }
+  
+  .policy-item i {
+    color: #ffbe33;
+    font-size: 20px;
+    margin-right: 15px;
+    margin-top: 3px;
+  }
+  
+  .policy-item p {
+    margin-bottom: 0;
+    color: #444;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 991px) {
+    .reservation-info {
+      margin-bottom: 40px;
+    }
+    
+    .atmosphere_section .col-md-4:not(:last-child) {
+      margin-bottom: 30px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .food-items-grid {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .reservation-title {
+      font-size: 2.5rem;
+    }
+    
+    .booking-form-container {
+      padding: 20px;
+    }
+    
+    .price-quantity {
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .price {
+      margin-bottom: 10px;
+      flex: 0 0 100%;
+    }
+    
+    .quantity-control {
+      margin-left: 0;
+    }
+  }
+</style>
 <!-- end book section -->
 {% endblock main %}

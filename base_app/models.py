@@ -1,5 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
+import random
+import string
+from datetime import datetime, timedelta
 
 # Create your models here.
 
@@ -55,6 +61,7 @@ class TableBooking(models.Model):
     ]
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    payment_complete = models.BooleanField(default=False)
     
     def __str__(self):
         return f"Table for {self.guests} by {self.name} on {self.date} at {self.time}"
@@ -95,6 +102,52 @@ class Order(models.Model):
     status = models.CharField(max_length=10, choices=status_choices, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    payment_complete = models.BooleanField(default=False)
+    for_table_booking = models.BooleanField(default=False, help_text="Indicates if this order is for a table booking")
     
     def __str__(self):
         return f"Order #{self.id} by {self.user.username}"
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    table_booking = models.ForeignKey(TableBooking, on_delete=models.SET_NULL, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_id = models.CharField(max_length=100, blank=True)
+    razorpay_order_id = models.CharField(max_length=100, blank=True)
+    razorpay_signature = models.CharField(max_length=255, blank=True)
+    payment_status_choices = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('refunded', 'Refunded'),
+    ]
+    payment_status = models.CharField(max_length=10, choices=payment_status_choices, default='pending')
+    payment_method = models.CharField(max_length=50, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        if self.order:
+            return f"Payment for Order #{self.order.id} by {self.user.username}"
+        elif self.table_booking:
+            return f"Payment for Table Booking by {self.user.username}"
+        else:
+            return f"Payment by {self.user.username}"
+            
+# Custom User model to support phone and email authentication - will be implemented in phase 2
+"""
+class CustomUser(AbstractUser):
+    phone_number = models.CharField(_('phone number'), max_length=15, blank=True, unique=True, null=True)
+    
+    # Either username or phone_number will be used for authentication
+    USERNAME_FIELD = 'username'  # Default remains username
+    REQUIRED_FIELDS = ['email']  # Email is still required
+    
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+    
+    def __str__(self):
+        return self.username
+"""

@@ -1,33 +1,37 @@
 from django.contrib import admin
-from .models import Category, MenuItem, Feedback, TableBooking, Contact
+from django.contrib.auth.admin import UserAdmin
+from .models import (
+    Category, 
+    MenuItem, 
+    Feedback, 
+    TableBooking, 
+    Contact,
+    CartItem, 
+    Order, 
+    Payment
+)
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
+# CustomUser admin registration will be implemented in phase 2
+"""
+# Register the custom user model with the admin site
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ('Phone Information', {'fields': ('phone_number',)}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Phone Information', {'fields': ('phone_number',)}),
+    )
+    list_display = ('username', 'email', 'phone_number', 'is_active', 'is_staff')
+    search_fields = ('username', 'email', 'phone_number', 'first_name', 'last_name')
 
-@admin.register(MenuItem)
-class MenuItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'is_featured', 'is_available')
-    list_filter = ('category', 'is_featured', 'is_available')
-    search_fields = ('name', 'description')
-    list_editable = ('price', 'is_featured', 'is_available')
+admin.site.register(CustomUser, CustomUserAdmin)
+"""
 
-@admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'created_at')
-    search_fields = ('name', 'email', 'message')
-    readonly_fields = ('created_at',)
-    list_filter = ('created_at',)
-
-@admin.register(TableBooking)
-class TableBookingAdmin(admin.ModelAdmin):
-    list_display = ('name', 'date', 'time', 'guests', 'status')
-    list_filter = ('status', 'date')
-    search_fields = ('name', 'email', 'phone')
-    list_editable = ('status',)
-    readonly_fields = ('created_at',)
-
-@admin.register(Contact)
-class ContactAdmin(admin.ModelAdmin):
-    list_display = ('address', 'phone', 'email')
+admin.site.register(Category)
+admin.site.register(MenuItem)
+admin.site.register(Feedback)
+admin.site.register(TableBooking)
+admin.site.register(Contact)
+admin.site.register(CartItem)
+admin.site.register(Order)
+admin.site.register(Payment)

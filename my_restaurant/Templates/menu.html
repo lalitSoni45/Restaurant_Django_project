@@ -31,17 +31,17 @@
           </div>
           <div class="cart-item-details">
             <h6>{{ item.menu_item.name }}</h6>
-            <p>${{ item.menu_item.price }} × {{ item.quantity }} = ${{ item.total }}</p>
+            <p>₹{{ item.menu_item.price }} × {{ item.quantity }} = ₹{{ item.total }}</p>
           </div>
           <div class="cart-item-quantity">
-            <a href="{% url 'Remove_From_Cart' item.id %}" class="quantity-btn">-</a>
+            <a href="{% url 'Remove_From_Cart' item.menu_item.id %}" class="quantity-btn" onclick="removeFromCart(event, '{{ item.menu_item.id }}')">-</a>
             <span class="quantity">{{ item.quantity }}</span>
-            <a href="{% url 'Add_To_Cart' item.menu_item.id %}" class="quantity-btn">+</a>
+            <a href="{% url 'Add_To_Cart' item.menu_item.id %}" class="quantity-btn" onclick="addToCartAndUpdate(event, '{{ item.menu_item.id }}')">+</a>
           </div>
         </div>
         {% endfor %}
         <div class="cart-total">
-          <h5>Total: ${{ cart_total }}</h5>
+          <h5>Total: ₹{{ cart_total }}</h5>
         </div>
         <div class="cart-buttons">
           <a href="{% url 'Clear_Cart' %}" class="btn btn-danger">Clear Cart</a>
@@ -66,13 +66,14 @@
               <!-- Category filters -->
               <div class="category-filters-container">
                 <ul class="filters_menu">
-                  <li class="{% if not request.GET.category %}active{% endif %}" data-filter="*">
-                    <a href="{% url 'Menu' %}">All Items</a>
-                  </li>
                   {% for category in categories %}
-                  <li class="{% if request.GET.category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %}" data-filter=".{{ category.name|lower }}">
+                  {% if category.name == 'Traditional Food' or category.name == 'Fast Food' or category.name == 'Drinks' %}
+                  <li class="{% if request.GET.category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %} 
+                           {% if category.name == 'Traditional Food' %}traditional{% elif category.name == 'Fast Food' %}fast-food{% elif category.name == 'Drinks' %}drinks{% endif %}" 
+                      data-filter=".{{ category.name|lower|cut:' ' }}">
                     <a href="{% url 'Menu' %}?category={{ category.id }}">{{ category.name }}</a>
                   </li>
+                  {% endif %}
                   {% endfor %}
                 </ul>
               </div>
@@ -88,29 +89,29 @@
             <div class="col-12">
               <div class="menu-banner">
                 <div class="featured-dish-main">
-                  <img src="{% static 'images/f3.png' %}" alt="Chef's Special" class="img-fluid">
+                  <img src="/media/food_images/paneer-butter-masala-5.webp" alt="Chef's Special" class="img-fluid">
                   <div class="featured-dish-info">
                     <div class="badge-special">Chef's Special</div>
-                    <h3>Signature Dishes</h3>
-                    <p>Handcrafted recipes passed down through generations</p>
+                    <h3>Paneer Butter Masala</h3>
+                    <p>Our signature traditional dish loved by our customers</p>
                   </div>
                 </div>
                 <div class="featured-dish-grid">
                   <div class="featured-dish-item">
-                    <img src="{% static 'images/f5.png' %}" alt="Seasonal dish" class="img-fluid">
-                    <span class="dish-label">Seasonal</span>
-                  </div>
-                  <div class="featured-dish-item">
-                    <img src="{% static 'images/f6.png' %}" alt="Popular dish" class="img-fluid">
+                    <img src="/media/food_images/Margherita Pizza.jpg" alt="Margherita Pizza" class="img-fluid">
                     <span class="dish-label">Most Popular</span>
                   </div>
                   <div class="featured-dish-item">
-                    <img src="{% static 'images/f2.png' %}" alt="New dish" class="img-fluid">
-                    <span class="dish-label">New Arrival</span>
+                    <img src="/media/food_images/Garlic naan.jpeg" alt="Garlic Naan" class="img-fluid">
+                    <span class="dish-label">Traditional</span>
                   </div>
                   <div class="featured-dish-item">
-                    <img src="{% static 'images/f8.png' %}" alt="Healthy option" class="img-fluid">
-                    <span class="dish-label">Healthy</span>
+                    <img src="/media/food_images/Cheese Burger.jpeg" alt="Cheese Burger" class="img-fluid">
+                    <span class="dish-label">Fast Food</span>
+                  </div>
+                  <div class="featured-dish-item">
+                    <img src="/media/food_images/drink_mango-lassi.jpeg" alt="Mango Lassi" class="img-fluid">
+                    <span class="dish-label">Refreshing</span>
                   </div>
                 </div>
               </div>
@@ -140,11 +141,74 @@
         
         <!-- Menu items grid -->
         <div class="menu-items-container">
+          <!-- When not filtering by category, show category headers -->
+          {% if not request.GET.category %}
+            {% regroup menu_items by category as category_items %}
+            {% for category_group in category_items %}
+              {% if category_group.grouper.name == 'Traditional Food' or category_group.grouper.name == 'Fast Food' or category_group.grouper.name == 'Drinks' %}
+                <div class="category-header {% if category_group.grouper.name == 'Traditional Food' %}traditional{% elif category_group.grouper.name == 'Fast Food' %}fast-food{% elif category_group.grouper.name == 'Drinks' %}drinks{% endif %}">
+                  <h3>{{ category_group.grouper.name }}</h3>
+                  <p>{{ category_group.grouper.description }}</p>
+                </div>
+                <div class="row">
+                  {% for item in category_group.list %}
+                    <div class="col-md-6 col-lg-4 menu-item-container">
+                      <!-- Item content -->
+                      <div class="menu-item box h-100 shadow-sm">
+                        <div class="img-box">
+                          {% if item.image %}
+                          <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                          {% else %}
+                          <img src="{% static 'images/f1.png' %}" alt="{{ item.name }}">
+                          {% endif %}
+                          
+                          {% if user.is_authenticated %}
+                          <div class="quick-add">
+                            <a href="{% url 'Add_To_Cart' item.id %}" onclick="addToCartAndToggle(event, '{{ item.id }}')">
+                              <i class="fa fa-plus"></i>
+                            </a>
+                          </div>
+                          {% else %}
+                          <div class="quick-add">
+                            <a href="{% url 'Login' %}?next={% url 'Menu' %}{% if request.GET.category %}?category={{ request.GET.category }}{% endif %}">
+                              <i class="fa fa-sign-in"></i>
+                            </a>
+                          </div>
+                          {% endif %}
+                        </div>
+                        
+                        <div class="detail-box">
+                          <h5>{{ item.name }}</h5>
+                          <p>{{ item.description|truncatechars:100 }}</p>
+                          <div class="options">
+                            <h6>₹{{ item.price }}</h6>
+                          </div>
+                          <div class="item-actions">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'Add_To_Cart' item.id %}" class="add-to-cart-btn" onclick="addToCartAndToggle(event, '{{ item.id }}')">
+                              <span>Add to Cart</span>
+                              <i class="fa fa-shopping-cart"></i>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'Login' %}?next={% url 'Menu' %}{% if request.GET.category %}?category={{ request.GET.category }}{% endif %}" class="add-to-cart-btn">
+                              <span>Sign In to Order</span>
+                              <i class="fa fa-sign-in"></i>
+                            </a>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% else %}
           <div class="row">
             {% for item in menu_items %}
             <div class="col-md-6 col-lg-4 menu-item-container">
-              <div class="menu-item">
-                <div class="item-image">
+              <div class="menu-item box h-100 shadow-sm">
+                <div class="img-box">
                   {% if item.image %}
                   <img src="{{ item.image.url }}" alt="{{ item.name }}">
                   {% else %}
@@ -153,23 +217,28 @@
                   
                   {% if user.is_authenticated %}
                   <div class="quick-add">
-                    <a href="{% url 'Add_To_Cart' item.id %}" onclick="addToCartAndToggle(event, {{ item.id }})">
+                    <a href="{% url 'Add_To_Cart' item.id %}" onclick="addToCartAndToggle(event, '{{ item.id }}')">
                       <i class="fa fa-plus"></i>
+                    </a>
+                  </div>
+                  {% else %}
+                  <div class="quick-add">
+                    <a href="{% url 'Login' %}?next={% url 'Menu' %}{% if request.GET.category %}?category={{ request.GET.category }}{% endif %}">
+                      <i class="fa fa-sign-in"></i>
                     </a>
                   </div>
                   {% endif %}
                 </div>
                 
-                <div class="item-info">
-                  <div class="item-header">
-                    <h4>{{ item.name }}</h4>
-                    <div class="item-price">${{ item.price }}</div>
+                <div class="detail-box">
+                  <h5>{{ item.name }}</h5>
+                  <p>{{ item.description|truncatechars:100 }}</p>
+                  <div class="options">
+                    <h6>₹{{ item.price }}</h6>
                   </div>
-                  <p class="item-description">{{ item.description|truncatechars:100 }}</p>
-                  
                   <div class="item-actions">
                     {% if user.is_authenticated %}
-                    <a href="{% url 'Add_To_Cart' item.id %}" class="add-to-cart-btn" onclick="addToCartAndToggle(event, {{ item.id }})">
+                    <a href="{% url 'Add_To_Cart' item.id %}" class="add-to-cart-btn" onclick="addToCartAndToggle(event, '{{ item.id }}')">
                       <span>Add to Cart</span>
                       <i class="fa fa-shopping-cart"></i>
                     </a>
@@ -191,6 +260,7 @@
             </div>
             {% endfor %}
           </div>
+          {% endif %}
         </div>
         
         <!-- Special requests note -->
@@ -296,6 +366,37 @@
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(255, 190, 51, 0.2);
     }
+    
+    /* Special styling for Traditional Food and Fast Food categories */
+    .filters_menu li.traditional {
+      border-color: #6b8e23;
+      background-color: rgba(107, 142, 35, 0.1);
+    }
+    
+    .filters_menu li.fast-food {
+      border-color: #e74c3c;
+      background-color: rgba(231, 76, 60, 0.1);
+    }
+    
+    .filters_menu li.drinks {
+      border-color: #3498db;
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .filters_menu li.traditional.active {
+      background-color: #6b8e23;
+      box-shadow: 0 5px 15px rgba(107, 142, 35, 0.3);
+    }
+    
+    .filters_menu li.fast-food.active {
+      background-color: #e74c3c;
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .filters_menu li.drinks.active {
+      background-color: #3498db;
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
 
     .filters_menu li a {
       color: #333;
@@ -312,6 +413,21 @@
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       border-color: #ffbe33;
+    }
+    
+    .filters_menu li.traditional:hover:not(.active) {
+      border-color: #6b8e23;
+      background-color: rgba(107, 142, 35, 0.2);
+    }
+    
+    .filters_menu li.fast-food:hover:not(.active) {
+      border-color: #e74c3c;
+      background-color: rgba(231, 76, 60, 0.2);
+    }
+    
+    .filters_menu li.drinks:hover:not(.active) {
+      border-color: #3498db;
+      background-color: rgba(52, 152, 219, 0.2);
     }
 
     /* Featured Dishes Banner */
@@ -457,42 +573,91 @@
 
     /* Menu Items Styling */
     .menu-items-container {
-      margin-bottom: 40px;
+      margin: 50px 0;
+    }
+    
+    /* Category headers for when showing all items */
+    .category-header {
+      margin: 50px 0 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .category-header:first-child {
+      margin-top: 0;
+    }
+    
+    .category-header h3 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      display: inline-block;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    .category-header h3:after {
+      content: "";
+      position: absolute;
+      width: 60px;
+      height: 3px;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .category-header.traditional h3:after {
+      background-color: #6b8e23;
+    }
+    
+    .category-header.fast-food h3:after {
+      background-color: #e74c3c;
     }
 
-    .menu-item {
-      background-color: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      height: 100%;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
+    .category-header.drinks h3:after {
+      background-color: #3498db;
+    }
+    
+    .category-header p {
+      font-size: 1.1rem;
+      color: #666;
+      max-width: 700px;
+      margin: 15px auto 0;
+    }
+    
+    .menu-item-container {
       margin-bottom: 30px;
-      border: 1px solid #eee;
     }
-
+    
+    .menu-item {
+      overflow: hidden;
+      border-radius: 12px;
+      position: relative;
+      transition: all 0.3s;
+      height: 100%;
+    }
+    
     .menu-item:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-
-    .item-image {
-      height: 220px;
+    
+    .img-box {
       position: relative;
       overflow: hidden;
+      height: 220px;
     }
-
-    .item-image img {
+    
+    .img-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      transition: transform 0.3s ease;
     }
-
-    .menu-item:hover .item-image img {
-      transform: scale(1.1);
+    
+    .menu-item:hover .img-box img {
+      transform: scale(1.05);
     }
-
+    
     .quick-add {
       position: absolute;
       top: 15px;
@@ -502,66 +667,68 @@
       height: 40px;
       border-radius: 50%;
       display: flex;
-      justify-content: center;
       align-items: center;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(255, 190, 51, 0.3);
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      opacity: 0.9;
     }
-
-    .menu-item:hover .quick-add {
+    
+    .quick-add:hover {
+      transform: scale(1.1);
       opacity: 1;
-      transform: translateY(0);
     }
-
+    
     .quick-add a {
-      color: #fff;
+      color: white;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .detail-box {
+      padding: 20px;
+      background-color:#222831;
+    }
+    
+    .detail-box h5 {
+      margin: 0 0 10px;
       font-size: 1.2rem;
+      font-weight: 600;
+      color: white;
     }
-
-    .item-info {
-      padding: 25px;
+    
+    .detail-box p {
+      color: #ffffff;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      font-size: 0.9rem;
     }
-
-    .item-header {
+    
+    .options {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .item-header h4 {
-      margin: 0;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #222;
-    }
-
-    .item-price {
-      background-color: #ffbe33;
-      color: #fff;
-      font-weight: bold;
-      padding: 5px 15px;
-      border-radius: 25px;
-      font-size: 1.1rem;
-    }
-
-    .item-description {
-      color: #666;
       margin-bottom: 20px;
-      font-size: 1rem;
-      line-height: 1.6;
-      height: 60px;
-      overflow: hidden;
     }
-
+    
+    .options h6 {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
     .item-actions {
       border-top: 1px solid #eee;
       padding-top: 20px;
       text-align: center;
     }
-
+    
+    /* Add to Cart Button */
     .add-to-cart-btn {
       display: inline-flex;
       align-items: center;
@@ -575,14 +742,14 @@
       text-decoration: none;
       font-weight: 600;
     }
-
+    
     .add-to-cart-btn:hover {
       background-color: #ffbe33;
       color: #fff;
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(255, 190, 51, 0.3);
     }
-
+    
     .add-to-cart-btn span {
       margin-right: 8px;
     }
@@ -704,7 +871,7 @@
       overflow-y: auto;
     }
     
-    .cart-sidebar.active {
+    .cart-sidebar.open {
       right: 0;
     }
     
@@ -899,7 +1066,7 @@
   
   <script>
     function toggleCart() {
-      document.getElementById('cartSidebar').classList.toggle('active');
+      document.getElementById('cartSidebar').classList.toggle('open');
     }
     
     function addToCartAndToggle(event, itemId) {
@@ -924,6 +1091,71 @@
         });
     }
     
+    function addToCartAndUpdate(event, itemId) {
+      event.preventDefault();
+      
+      // Get the href attribute
+      const href = event.currentTarget.getAttribute('href');
+      
+      // Make a fetch request to add the item to cart
+      fetch(href)
+        .then(response => {
+          // Reload the page to update the cart contents
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error adding item to cart:', error);
+        });
+    }
+    
+    function removeFromCart(event, itemId) {
+      event.preventDefault();
+      
+      // Get the href attribute
+      const href = event.currentTarget.getAttribute('href');
+      
+      // Make a fetch request to remove the item from cart
+      fetch(href)
+        .then(response => {
+          // Reload the page to update the cart contents
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error removing item from cart:', error);
+        });
+    }
+    
+    function clearCart(event) {
+      event.preventDefault();
+      
+      // Get the href attribute
+      const href = event.currentTarget.getAttribute('href');
+      
+      // Make a fetch request to clear the cart
+      fetch(href)
+        .then(response => {
+          // Reload the page to hide the cart sidebar
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error clearing cart:', error);
+        });
+    }
+    
+    // Check if cart is empty and toggle fixed cart button visibility
+    document.addEventListener('DOMContentLoaded', function() {
+      const cartItems = document.querySelectorAll('.cart-item');
+      const fixedCartButton = document.querySelector('.fixed-cart-button');
+      
+      if (fixedCartButton) {
+        if (cartItems.length === 0) {
+          fixedCartButton.style.display = 'none';
+        } else {
+          fixedCartButton.style.display = 'flex';
+        }
+      }
+    });
+    
     // Close cart when clicking outside
     document.addEventListener('click', function(event) {
       const cartSidebar = document.getElementById('cartSidebar');
@@ -936,10 +1168,10 @@
         }
       });
       
-      if (cartSidebar.classList.contains('active') && 
+      if (cartSidebar.classList.contains('open') && 
           !cartSidebar.contains(event.target) && 
           !clickedOnCartBtn) {
-        cartSidebar.classList.remove('active');
+        cartSidebar.classList.remove('open');
       }
     });
   </script>

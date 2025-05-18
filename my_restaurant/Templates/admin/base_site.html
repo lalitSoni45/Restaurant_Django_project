@@ -1,0 +1,45 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Feane Restaurant Admin{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}">
+<style>
+  :root {
+    --primary-color: #ffbe33;
+    --secondary-color: #222831;
+  }
+  
+  .dashboard-link {
+    display: inline-block;
+    background: #6236FF;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-left: 15px;
+    font-weight: 500;
+    text-transform: none;
+    font-size: 0.9rem;
+    text-decoration: none !important;
+    transition: background-color 0.2s;
+  }
+  
+  .dashboard-link:hover {
+    background: #5022e0;
+    color: white !important;
+  }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">Feane Restaurant Administration</a>
+  <a href="{% url 'Admin_Dashboard' %}" class="dashboard-link">Modern Dashboard</a>
+</h1>
+{% endblock %}
+
+{% block welcome-msg %}
+<strong>{{ user.username }}</strong> - Feane Restaurant Staff
+{% endblock %} 

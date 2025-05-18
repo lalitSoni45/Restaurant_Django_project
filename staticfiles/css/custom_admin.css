@@ -1,0 +1,295 @@
+/* Custom Admin CSS for Feane Restaurant */
+
+/* Main background and text colors */
+:root {
+  --primary-color: #ffbe33;
+  --secondary-color: #222831;
+  --text-color: #484848;
+  --link-color: #007bff;
+  --link-hover-color: #0056b3;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --light-bg: #f8f9fa;
+  --border-color: #dee2e6;
+  --header-bg: #222831;
+  --sidebar-bg: #f8f9fa;
+}
+
+/* Body and general styling */
+body {
+  font-family: 'Roboto', 'Lucida Grande', 'DejaVu Sans', 'Bitstream Vera Sans', Verdana, Arial, sans-serif;
+  color: var(--text-color);
+  line-height: 1.5;
+  background-color: #f5f5f5;
+}
+
+/* Header styling */
+#header {
+  background: var(--header-bg);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#header a:link, #header a:visited {
+  color: white;
+}
+
+#header a:hover {
+  color: var(--primary-color);
+}
+
+#branding h1 {
+  font-weight: 600;
+}
+
+#branding h1 a:link, #branding h1 a:visited {
+  color: white;
+}
+
+#branding h1 a:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+#user-tools {
+  font-size: 0.9rem;
+}
+
+/* Sidebar styling */
+.module h2, .module caption, .inline-group h2 {
+  background: var(--secondary-color);
+  color: white;
+  font-weight: 500;
+}
+
+/* Content area styling */
+.module {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: none;
+  margin-bottom: 20px;
+}
+
+/* Button styling */
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+  background: var(--secondary-color);
+  color: white;
+  border-radius: 4px;
+  padding: 8px 15px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.button.default, input[type=submit].default, .submit-row input.default {
+  background: var(--primary-color);
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover,
+.submit-row input:hover, a.button:hover {
+  background: #333a45;
+}
+
+.button.default:hover, input[type=submit].default:hover, .submit-row input.default:hover {
+  background: #e69c00;
+}
+
+/* Form styling */
+.form-row {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-row:last-child {
+  border-bottom: none;
+}
+
+form label {
+  font-weight: 500;
+  color: #555;
+}
+
+.help, p.help, form p.help, div.help, form div.help {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+input[type=text], input[type=password], input[type=email], input[type=url], input[type=number],
+input[type=tel], textarea, select, .vTextField {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=url]:focus, input[type=number]:focus,
+input[type=tel]:focus, textarea:focus, select:focus, .vTextField:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(255, 190, 51, 0.15);
+}
+
+/* Table styling */
+.module table {
+  border-collapse: collapse;
+}
+
+table thead th {
+  background: #f5f5f5;
+  padding: 12px 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+table td, table th {
+  padding: 10px;
+}
+
+.row1 {
+  background: white;
+}
+
+.row2 {
+  background: #f8f9fa;
+}
+
+/* Messaging */
+.messagelist {
+  padding: 0;
+}
+
+.messagelist li {
+  padding: 12px 15px;
+  margin: 0 0 10px 0;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.messagelist li.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.messagelist li.warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.messagelist li.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Dashboard styling */
+.dashboard .module {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.dashboard .module table td a {
+  color: var(--link-color);
+  font-weight: 500;
+}
+
+.dashboard .module table td a:hover {
+  color: var(--link-hover-color);
+}
+
+/* Logo styling */
+.dashboard #content h1 {
+  font-weight: 600;
+  color: var(--secondary-color);
+}
+
+/* Dashboard count styling */
+.dashboard .module caption a {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+/* Breadcrumbs */
+div.breadcrumbs {
+  background: #f5f5f5;
+  color: #555;
+  border-bottom: 1px solid #e9ecef;
+  padding: 12px 40px;
+}
+
+div.breadcrumbs a {
+  color: #666;
+}
+
+div.breadcrumbs a:hover {
+  color: var(--primary-color);
+}
+
+/* Pagination */
+.paginator {
+  padding: 15px 10px;
+  font-size: 0.9rem;
+}
+
+.paginator a:link, .paginator a:visited {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-right: 5px;
+}
+
+.paginator a:hover {
+  background: #f5f5f5;
+  color: var(--primary-color);
+}
+
+/* Add Feane logo and branding */
+#branding h1::before {
+  content: "🍽️ ";
+  font-size: 1.2em;
+}
+
+#branding h1 {
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Make action buttons more prominent */
+.object-tools a {
+  background: var(--primary-color);
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.object-tools a:hover {
+  background: #e69c00;
+}
+
+/* Improve related widgets */
+.related-widget-wrapper {
+  overflow: hidden;
+}
+
+/* Responsive improvements */
+@media (max-width: 767px) {
+  #header {
+    padding: 10px 20px;
+  }
+
+  #branding h1 {
+    font-size: 1.2rem;
+  }
+
+  #user-tools {
+    display: block;
+    margin-top: 10px;
+  }
+} 

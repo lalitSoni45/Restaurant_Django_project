@@ -157,9 +157,17 @@
             </div>
             
             <div class="btn_box text-center">
+              {% if user_authenticated %}
               <button type="submit" class="feedback-btn">
                 <i class="fa fa-paper-plane"></i> Submit Feedback
               </button>
+              {% else %}
+              <div class="alert alert-info" role="alert">
+                <p><i class="fa fa-info-circle"></i> Login required to submit feedback</p>
+                <a href="{% url 'Login' %}?next={{ request.path }}" class="btn btn-primary">Login</a>
+                <a href="{% url 'Register' %}?next={{ request.path }}" class="btn btn-secondary">Register</a>
+              </div>
+              {% endif %}
             </div>
           </form>
         </div>
