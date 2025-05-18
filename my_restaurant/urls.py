@@ -47,6 +47,7 @@ urlpatterns = [
     path('payment/success/', payment_success, name='Payment_Success'),
     path('payment/failed/', payment_failed, name='Payment_Failed'),
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Always include static and media URLs, even in production
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
