@@ -87,7 +87,7 @@
     "key": "{{ razorpay_key_id }}", // Enter the Key ID generated from the Dashboard
     "amount": "{{ amount|floatformat:'2'|cut:'.'|stringformat:'s' }}00", // Amount is in currency subunits (paise). Default currency is INR. 1 rupee = 100 paise
     "currency": "{{ currency }}",
-    "name": "Feane Restaurant",
+    "name": "Kushina Restaurant",
     "description": "{% if payment.table_booking and payment.order %}Combined Booking & Food Payment{% else %}{{ payment_type }} Payment{% endif %}",
     "image": "{% static 'images/favicon.png' %}",
     "order_id": "{{ razorpay_order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
@@ -136,7 +136,7 @@
       "contact": ""
     },
     "notes": {
-      "address": "Feane Restaurant"
+      "address": "Kushina Restaurant"
     },
     "theme": {
       "color": "#ffbe33"
