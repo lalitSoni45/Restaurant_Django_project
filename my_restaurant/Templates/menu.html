@@ -71,7 +71,16 @@
                   <li class="{% if request.GET.category|stringformat:'s' == category.id|stringformat:'s' %}active{% endif %} 
                            {% if category.name == 'Traditional Food' %}traditional{% elif category.name == 'Fast Food' %}fast-food{% elif category.name == 'Drinks' %}drinks{% endif %}" 
                       data-filter=".{{ category.name|lower|cut:' ' }}">
-                    <a href="{% url 'Menu' %}?category={{ category.id }}">{{ category.name }}</a>
+                    <a href="{% url 'Menu' %}?category={{ category.id }}">
+                      {% if category.name == 'Traditional Food' %}
+                        <i class="fa fa-cutlery"></i>
+                      {% elif category.name == 'Fast Food' %}
+                        <i class="fa fa-hamburger"></i>
+                      {% elif category.name == 'Drinks' %}
+                        <i class="fa fa-glass"></i>
+                      {% endif %}
+                      {{ category.name }}
+                    </a>
                   </li>
                   {% endif %}
                   {% endfor %}
@@ -97,21 +106,21 @@
                   </div>
                 </div>
                 <div class="featured-dish-grid">
-                  <div class="featured-dish-item">
-                    <img src="https://placehold.co/400x200?text=Margherita+Pizza" alt="Margherita Pizza" class="img-fluid">
-                    <span class="dish-label">Most Popular</span>
-                  </div>
-                  <div class="featured-dish-item">
-                    <img src="https://placehold.co/400x200?text=Garlic+Naan" alt="Garlic Naan" class="img-fluid">
+                  <div class="featured-dish-item traditional">
+                    <img src="https://placehold.co/400x200?text=Traditional+Food" alt="Traditional Food" class="img-fluid">
                     <span class="dish-label">Traditional</span>
                   </div>
-                  <div class="featured-dish-item">
-                    <img src="https://placehold.co/400x200?text=Cheese+Burger" alt="Cheese Burger" class="img-fluid">
+                  <div class="featured-dish-item fast-food">
+                    <img src="https://placehold.co/400x200?text=Fast+Food" alt="Fast Food" class="img-fluid">
                     <span class="dish-label">Fast Food</span>
                   </div>
+                  <div class="featured-dish-item drinks">
+                    <img src="https://placehold.co/400x200?text=Drinks" alt="Drinks" class="img-fluid">
+                    <span class="dish-label">Drinks</span>
+                  </div>
                   <div class="featured-dish-item">
-                    <img src="https://placehold.co/400x200?text=Mango+Lassi" alt="Mango Lassi" class="img-fluid">
-                    <span class="dish-label">Refreshing</span>
+                    <img src="https://placehold.co/400x200?text=Explore+Menu" alt="Explore Menu" class="img-fluid">
+                    <span class="dish-label">Explore Menu</span>
                   </div>
                 </div>
               </div>
@@ -147,6 +156,10 @@
             {% for category_group in category_items %}
               {% if category_group.grouper.name == 'Traditional Food' or category_group.grouper.name == 'Fast Food' or category_group.grouper.name == 'Drinks' %}
                 <div class="category-header {% if category_group.grouper.name == 'Traditional Food' %}traditional{% elif category_group.grouper.name == 'Fast Food' %}fast-food{% elif category_group.grouper.name == 'Drinks' %}drinks{% endif %}">
+                  <!-- Add category image banner -->
+                  <div class="category-image-banner">
+                    <img src="https://placehold.co/1200x300?text={{ category_group.grouper.name }}" alt="{{ category_group.grouper.name }}" class="img-fluid">
+                  </div>
                   <h3>{{ category_group.grouper.name }}</h3>
                   <p>{{ category_group.grouper.description }}</p>
                 </div>
@@ -395,6 +408,13 @@
       text-decoration: none;
       font-weight: 600;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .filters_menu li a i {
+      font-size: 1.2rem;
     }
 
     .filters_menu li.active a {
@@ -502,6 +522,18 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
+    .featured-dish-item.traditional {
+      border-left: 4px solid #6b8e23;
+    }
+    
+    .featured-dish-item.fast-food {
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .featured-dish-item.drinks {
+      border-left: 4px solid #3498db;
+    }
+
     .featured-dish-item img {
       width: 100%;
       height: 100%;
@@ -577,6 +609,43 @@
     
     .category-header:first-child {
       margin-top: 0;
+    }
+    
+    /* Category image banner */
+    .category-image-banner {
+      margin-bottom: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    .category-image-banner:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .category-image-banner img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    
+    .category-header.traditional .category-image-banner {
+      border-bottom: 4px solid #6b8e23;
+    }
+    
+    .category-header.fast-food .category-image-banner {
+      border-bottom: 4px solid #e74c3c;
+    }
+    
+    .category-header.drinks .category-image-banner {
+      border-bottom: 4px solid #3498db;
     }
     
     .category-header h3 {
