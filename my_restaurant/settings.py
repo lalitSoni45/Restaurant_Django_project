@@ -139,7 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "my_restaurant", "Media")
 # Simplify static file serving for production
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
     },
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",

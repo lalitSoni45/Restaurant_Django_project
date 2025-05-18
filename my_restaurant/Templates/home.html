@@ -255,7 +255,11 @@
           <div class="col-sm-6 col-lg-4">
               <div class="box">
                   <div class="img-box">
+                      {% if item.image %}
+                      <img src="{{ item.image.url }}" alt="{{ item.name }}" class="img-fluid">
+                      {% else %}
                       <img src="https://placehold.co/400x300?text={{ item.name }}" alt="{{ item.name }}" class="img-fluid">
+                      {% endif %}
                   </div>
                   <div class="detail-box">
                     <h5>{{ item.name }}</h5>
